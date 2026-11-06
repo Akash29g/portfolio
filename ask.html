@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ask the reviewer | Akash Goswami</title>
+<meta name="description" content="Ask an Amazon Bedrock powered assistant questions about Akash Goswami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap" style="max-width:860px">
+<div class="top"><span class="m"><a href="index.html">akash29g / portfolio</a></span><button class="tb" id="theme" aria-label="Toggle theme">Theme</button></div>
+<div class="sn" role="navigation" aria-label="Site"><a href="index.html">Home</a><a href="aws.html">AWS</a><a href="projects/docanalytics.html">Projects</a><a href="open-source.html">Open source</a><a href="race.html">Race</a><a href="ask.html" aria-current="page">Ask</a><a href="blog.html">Blog</a><a href="resume.html">Resume</a><a href="contact.html">Contact</a></div>
+<h1>Ask the reviewer <span>Amazon Bedrock</span></h1>
+<p>Ask anything about my work. Answers come from Amazon Bedrock and are limited to facts I have written down. If something is not covered, it will point you to my email.</p>
+<div class="box"><div class="bd"><div id="log" role="log" aria-live="polite"></div>
+<form id="askf" style="display:flex;gap:8px;flex-wrap:wrap"><input id="askq" maxlength="300" aria-label="Question" placeholder="Ask anything about Akash" style="flex:1;min-width:200px"><button class="tb" type="submit">Ask</button></form>
+<p class="hint">Try: <button class="tb qc" type="button">What did you build at AVEVA?</button> <button class="tb qc" type="button">Which AWS services do you know?</button> <button class="tb qc" type="button">Tell me about your open source work</button> <button class="tb qc" type="button">Why should we hire you?</button></p></div></div>
+</div>
+<script src="config.js"></script>
+<script>
+const $=s=>document.querySelector(s);$("#theme").onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).getPropertyValue("--bg").trim()==="#0d1117";r.dataset.theme=d?"light":"dark"};
+const post=async(p,b)=>{if(!API_URL)throw 0;const r=await fetch(API_URL+p,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(b)});if(!r.ok)throw 0;return r.json()};
+const log=$("#log"),add=(who,t)=>{const d=document.createElement("div");d.style.cssText="margin:6px 0;padding:8px 10px;border:1px solid var(--line);border-radius:6px";d.textContent=who+": "+t;log.append(d);return d};
+$("#askf").onsubmit=async e=>{e.preventDefault();const q=$("#askq").value.trim();if(!q)return;add("You",q);$("#askq").value="";const d=add("Reviewer","Thinking...");
+try{d.textContent="Reviewer: "+(await post("/ask",{q})).a}catch(x){d.textContent="Reviewer: I am offline right now. Email akash29goswami@gmail.com instead."}};
+document.querySelectorAll(".qc").forEach(b=>b.onclick=()=>{$("#askq").value=b.textContent;$("#askf").requestSubmit()});
+</script>
+</body>
+</html>

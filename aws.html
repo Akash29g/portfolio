@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AWS | Akash Goswami</title>
+<meta name="description" content="How Akash builds on AWS: services used, this site's architecture and a Well-Architected self-review.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap" style="max-width:860px">
+<div class="top"><span class="m"><a href="index.html">akash29g / portfolio</a></span><button class="tb" id="theme" aria-label="Toggle theme">Theme</button></div>
+<div class="sn" role="navigation" aria-label="Site"><a href="index.html">Home</a><a href="aws.html" aria-current="page">AWS</a><a href="projects/docanalytics.html">Projects</a><a href="open-source.html">Open source</a><a href="race.html">Race</a><a href="ask.html">Ask</a><a href="blog.html">Blog</a><a href="resume.html">Resume</a><a href="contact.html">Contact</a></div>
+<h1>AWS, from hackathons to production</h1>
+<p>I build on AWS across small projects and production work. This page shows what I have used, how this site runs, and how I would grade it.</p>
+<div class="box"><h3>Services I have used</h3><div class="bd">
+<p><b>AVEVA, production (2026):</b> Bedrock, S3, ECS, ALB, RDS, ECR, IAM and GuardDuty, provisioned with Terraform.</p>
+<p><b>Twizz, Discord bot (2025):</b> EC2, CloudWatch and Lambda.</p>
+<p><b>This portfolio (2026):</b> Amplify Hosting, CloudFront, API Gateway, Lambda, Step Functions, DynamoDB, SES, SNS and Bedrock.</p></div></div>
+<div class="box"><h3>How this site runs on AWS (click a service)</h3><div class="bd">
+<p class="hint">Visitor to CloudFront to Amplify Hosting serves the site. Visitor to API Gateway to Lambda calls Bedrock, Step Functions, DynamoDB and SES.</p>
+<div class="arch"><button class="nd" data-k="am">Amplify Hosting</button><button class="nd" data-k="cf">CloudFront</button><button class="nd" data-k="ag">API Gateway</button><button class="nd" data-k="la">Lambda</button><button class="nd" data-k="br">Bedrock</button><button class="nd" data-k="sf">Step Functions</button><button class="nd" data-k="db">DynamoDB</button><button class="nd" data-k="se">SES</button><button class="nd" data-k="sn">SNS</button></div>
+<p id="ai" role="status" style="margin-bottom:0">Click a service to see why it is here.</p></div></div>
+<div class="box"><h3>Well-Architected self-review (scored by me, 5 is best)</h3>
+<div class="pil"><b>Operational excellence 3/5</b><span>Backend is infrastructure as code (SAM), site redeploys on every git push. Next: CloudWatch alarms.</span><div class="bar"><i style="width:60%"></i></div></div>
+<div class="pil"><b>Security 4/5</b><span>Separate IAM roles, input validation, CORS locked to my domain, no secrets in code. Next: WAF.</span><div class="bar"><i style="width:80%"></i></div></div>
+<div class="pil"><b>Reliability 3/5</b><span>Managed serverless services, and the race game still works if the API is down.</span><div class="bar"><i style="width:60%"></i></div></div>
+<div class="pil"><b>Performance efficiency 4/5</b><span>Static site on CloudFront, a small Bedrock model, on-demand DynamoDB.</span><div class="bar"><i style="width:80%"></i></div></div>
+<div class="pil"><b>Cost optimization 4/5</b><span>Pay per request everywhere, throttled API, budget alert on the account.</span><div class="bar"><i style="width:80%"></i></div></div>
+<div class="pil"><b>Sustainability 3/5</b><span>Serverless scales to zero, so there are no idle servers.</span><div class="bar"><i style="width:60%"></i></div></div>
+</div>
+
+<div class="box"><h3>AWS timeline</h3><div class="bd">
+<div class="ev"><span><b>Sept 2025:</b> hosted the Twizz bot on EC2, with CloudWatch and Lambda for monitoring and automated recovery</span></div>
+<div class="ev"><span><b>Jun to Aug 2026:</b> shipped Bedrock invoice extraction, GuardDuty malware scanning and Terraform infrastructure at AVEVA</span></div>
+<div class="ev"><span><b>Oct 2026:</b> built an invoice agent with Strands and Amazon Bedrock for an AWS Builder Center challenge</span></div>
+<div class="ev"><span><b>Oct 2026:</b> built this portfolio on Amplify with a serverless backend for the AWS Student Builder Challenge</span></div>
+<div class="ev"><span><b>Next:</b> applying to AWS Community Builders (applications open around Jan 2027)</span></div>
+</div></div>
+<p class="hint"><a href="blog.html">Read how I built this site</a> or <a href="contact.html">get in touch</a>.</p>
+</div>
+<script src="config.js"></script>
+<script>
+const $=s=>document.querySelector(s);$("#theme").onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).getPropertyValue("--bg").trim()==="#0d1117";r.dataset.theme=d?"light":"dark"};
+const AI={am:"Hosts the static site and redeploys on every git push. This is the hosting service the challenge requires.",cf:"Amplify serves the site through CloudFront's edge network, so it loads fast for visitors worldwide.",ag:"HTTP API in front of Lambda, with throttling so a burst of traffic cannot run up the bill.",la:"One Node.js function handles three routes: ask, merge and contact.",br:"Powers Ask the reviewer through the Converse API, answering only from facts I provide.",sf:"An Express workflow behind the merge button: validate, record the merge, notify me.",db:"On-demand table that holds the merge counter and contact messages.",se:"Emails me the messages sent through the contact form.",sn:"Sends me an email notification each time someone merges the pull request."};
+document.querySelectorAll(".nd").forEach(b=>b.onclick=()=>{document.querySelectorAll(".nd").forEach(x=>x.setAttribute("aria-pressed",x===b));$("#ai").textContent=AI[b.dataset.k]});
+</script>
+</body>
+</html>

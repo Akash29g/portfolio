@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact | Akash Goswami</title>
+<meta name="description" content="Contact Akash Goswami, software engineer. Open to US software engineering roles from August 2027.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap" style="max-width:760px">
+<div class="top"><span class="m"><a href="index.html">akash29g / portfolio</a> / contact</span><button class="tb" id="theme" aria-label="Toggle theme">Theme</button></div>
+<div class="sn" role="navigation" aria-label="Site"><a href="index.html">Home</a><a href="aws.html">AWS</a><a href="projects/docanalytics.html">Projects</a><a href="open-source.html">Open source</a><a href="race.html">Race</a><a href="ask.html">Ask</a><a href="blog.html">Blog</a><a href="resume.html">Resume</a><a href="contact.html" aria-current="page">Contact</a></div>
+<h1>Contact <span>#new-conversation</span></h1>
+<div class="meta"><span class="open">Open</span><span>Open to US software engineering roles from Aug 2027</span></div>
+<div class="box"><h3>Send a message (API Gateway, Lambda, SES)</h3><div class="bd">
+<form id="cf" style="display:grid;gap:8px">
+<input name="nm" required maxlength="80" placeholder="Name" aria-label="Name">
+<input name="em" type="email" required maxlength="120" placeholder="Email" aria-label="Email">
+<textarea name="ms" required maxlength="1000" rows="5" placeholder="Message" aria-label="Message"></textarea>
+<button class="tb" type="submit" style="justify-self:start">Send</button>
+<span id="co" class="hint" role="status" aria-live="polite"></span>
+</form></div></div>
+<div class="box"><h3>Or reach me directly</h3><div class="bd">
+<p><a href="mailto:akash29goswami@gmail.com">akash29goswami@gmail.com</a></p>
+<p><a href="https://www.linkedin.com/in/akash29goswami">linkedin.com/in/akash29goswami</a></p>
+<p><a href="https://github.com/akash29g">github.com/akash29g</a></p>
+<p><a href="Akash_Goswami_Resume.pdf" download>Download resume (PDF)</a></p>
+</div></div>
+<p class="hint"><a href="index.html">Back to the pull request</a></p>
+</div>
+<script src="config.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+$("#theme").onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).getPropertyValue("--bg").trim()==="#0d1117";r.dataset.theme=d?"light":"dark"};
+const post=async(p,b)=>{if(!API_URL)throw 0;const r=await fetch(API_URL+p,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(b)});if(!r.ok)throw 0;return r.json()};
+$("#cf").onsubmit=async e=>{e.preventDefault();const f=e.target,o=$("#co");o.textContent="Sending...";
+try{await post("/contact",{name:f.nm.value,email:f.em.value,message:f.ms.value});o.textContent="Sent. I will reply soon.";f.reset()}catch(x){o.textContent="Could not send. Email akash29goswami@gmail.com directly."}};
+</script>
+</body>
+</html>

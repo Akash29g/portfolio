@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resume | Akash Goswami</title>
+<meta name="description" content="Resume of Akash Goswami, software engineer and final year B.Tech CSE student at NIT Warangal.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap" style="max-width:860px">
+<div class="top"><span class="m"><a href="index.html">akash29g / portfolio</a></span><button class="tb" id="theme" aria-label="Toggle theme">Theme</button></div>
+<div class="sn" role="navigation" aria-label="Site"><a href="index.html">Home</a><a href="aws.html">AWS</a><a href="projects/docanalytics.html">Projects</a><a href="open-source.html">Open source</a><a href="race.html">Race</a><a href="ask.html">Ask</a><a href="blog.html">Blog</a><a href="resume.html" aria-current="page">Resume</a><a href="contact.html">Contact</a></div>
+<h1>Akash Goswami <span>Resume</span></h1>
+<p class="hint">US citizen | <a href="mailto:akash29goswami@gmail.com">akash29goswami@gmail.com</a> | <a href="https://www.linkedin.com/in/akash29goswami">LinkedIn</a> | <a href="https://github.com/akash29g">GitHub</a> | <a href="Akash_Goswami_Resume.pdf" download>Download PDF</a></p>
+<div class="box"><h3>Education</h3><div class="bd"><b>NIT Warangal</b>, B.Tech in Computer Science, May 2027, Telangana, India</div></div>
+<div class="box"><h3>Experience</h3><div class="bd"><b>Software Developer Intern, AVEVA</b> (Hyderabad, June to August 2026)<ul>
+<li>Designed and built DocAnalytics, a multi-tenant document-processing analytics platform, end to end from data modeling to deployment. Hosted in production under a custom domain.</li>
+<li>Built the core platform and REST APIs with .NET 10, Angular 22 with Signals and PostgreSQL via EF Core, enforcing tenant isolation with global query filters and role-based authorization.</li>
+<li>Shipped an AI invoice-extraction pipeline on AWS Bedrock and S3, reaching about 98% extraction confidence via automated subtotal and total reconciliation, hardened with GuardDuty malware scanning.</li>
+<li>Provisioned production AWS infrastructure with Terraform (ECS, ALB, RDS, ECR) behind CI/CD gated on test coverage, gitleaks and Trivy, with API rate limiting.</li>
+<li>Applied TDD with xUnit and Vitest, and load tested with JMeter: sub 3 second responses with 0% errors at 1M+ records.</li></ul></div></div>
+<div class="box"><h3>Projects</h3><div class="bd">
+<p><b>Twizz</b> (Python, Tesseract OCR, Docker, AWS EC2, Sept 2025): Discord job-alert bot serving 7000+ users across 4 continents, with CloudWatch and Lambda monitoring and automated recovery.</p>
+<p><b>Investment Portfolio Management System</b> (SQL, July 2025): 12+ normalized BCNF tables, FIFO sales, SIP NAV aggregation and return projections.</p>
+<p><b>CryptoHunt Linux Emulator</b> (Node.js, MongoDB, Heroku, Nov 2024): CTF platform for Technozion '24, with 40% fewer database queries and 25% faster responses.</p></div></div>
+<div class="box"><h3>Technical skills</h3><div class="bd">
+<p><b>Languages:</b> C++, C#, C, Python, Java, TypeScript, SQL<br><b>Frameworks:</b> .NET 10, ASP.NET Core, Angular 22, EF Core<br><b>Databases:</b> PostgreSQL, Oracle SQL<br><b>Cloud and DevOps:</b> AWS (S3, RDS, Bedrock, ECS, IAM, GuardDuty), Terraform, Docker, CI/CD<br><b>Tools:</b> Git, GitHub, Swagger, Postman, JMeter, xUnit, Vitest, Visual Studio</p></div></div>
+<div class="box"><h3>Leadership and achievements</h3><div class="bd"><ul>
+<li>Additional Secretary, CSE Society, NITW (Sept 2024 to present). Led the Machine Learning Team and co-led Noobathon 5.0, a 24-hour hackathon for first-years.</li>
+<li>Hacktoberfest 2025 Super Contributor (6+ PRs merged). Merged a Kestra plugin-github PR in Hacktoberfest 2026.</li>
+<li>2nd place at HackQE Hackathon 2021 for OxyMap, a COVID-19 resource locator.</li>
+<li>$100 HackClub grant for a custom PCB design, open sourced on GitHub.</li></ul></div></div>
+</div>
+<script src="config.js"></script>
+<script>
+const $=s=>document.querySelector(s);$("#theme").onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).getPropertyValue("--bg").trim()==="#0d1117";r.dataset.theme=d?"light":"dark"};
+</script>
+</body>
+</html>

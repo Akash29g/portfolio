@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Backend for akash portfolio (ask, merge, contact)
+Parameters:
+  OwnerEmail: {Type: String}
+  AllowedOrigin: {Type: String, Default: "*"}
+  ModelId: {Type: String, Default: "amazon.nova-lite-v1:0"}
+Resources:
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions: [{AttributeName: pk, AttributeType: S}, {AttributeName: sk, AttributeType: S}]
+      KeySchema: [{AttributeName: pk, KeyType: HASH}, {AttributeName: sk, KeyType: RANGE}]
+  Topic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription: [{Protocol: email, Endpoint: !Ref OwnerEmail}]
+  Flow:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      Type: EXPRESS
+      DefinitionSubstitutions: {TableName: !Ref Table, TopicArn: !Ref Topic}
+      Policies:
+        - DynamoDBCrudPolicy: {TableName: !Ref Table}
+        - SNSPublishMessagePolicy: {TopicName: !GetAtt Topic.TopicName}
+      Definition:
+        StartAt: Validate
+        States:
+          Validate: {Type: Pass, Next: Record}
+          Record:
+            Type: Task
+            Resource: arn:aws:states:::dynamodb:updateItem
+            Parameters:
+              TableName: ${TableName}
+              Key: {pk: {S: stats}, sk: {S: merges}}
+              UpdateExpression: ADD n :one
+              ExpressionAttributeValues: {":one": {N: "1"}}
+              ReturnValues: UPDATED_NEW
+            ResultSelector: {"count.$": "$.Attributes.n.N"}
+            Next: Notify
+          Notify:
+            Type: Task
+            Resource: arn:aws:states:::sns:publish
+            Parameters: {TopicArn: "${TopicArn}", Message: "Someone merged your portfolio pull request."}
+            ResultPath: null
+            End: true
+  Api:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      DefaultRouteSettings: {ThrottlingBurstLimit: 10, ThrottlingRateLimit: 5}
+      CorsConfiguration:
+        AllowOrigins: [!Ref AllowedOrigin]
+        AllowMethods: [POST, OPTIONS]
+        AllowHeaders: [content-type]
+  Fn:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: nodejs22.x
+      Handler: app.handler
+      CodeUri: src/
+      Timeout: 20
+      MemorySize: 256
+      Environment:
+        Variables: {TABLE: !Ref Table, FLOW_ARN: !Ref Flow, OWNER: !Ref OwnerEmail, MODEL_ID: !Ref ModelId}
+      Policies:
+        - DynamoDBCrudPolicy: {TableName: !Ref Table}
+        - Statement:
+            - {Effect: Allow, Action: "states:StartSyncExecution", Resource: !Ref Flow}
+            - {Effect: Allow, Action: "bedrock:InvokeModel", Resource: "*"}
+            - {Effect: Allow, Action: "ses:SendEmail", Resource: "*"}
+      Events:
+        Ask: {Type: HttpApi, Properties: {ApiId: !Ref Api, Path: /ask, Method: POST}}
+        Merge: {Type: HttpApi, Properties: {ApiId: !Ref Api, Path: /merge, Method: POST}}
+        Contact: {Type: HttpApi, Properties: {ApiId: !Ref Api, Path: /contact, Method: POST}}
+Outputs:
+  ApiUrl:
+    Value: !Sub "https://${Api}.execute-api.${AWS::Region}.amazonaws.com"

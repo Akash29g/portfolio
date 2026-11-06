@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DocAnalytics case study | Akash Goswami</title>
+<meta name="description" content="Case study: DocAnalytics, a multi-tenant document-processing analytics platform built at AVEVA.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="wrap" style="max-width:860px">
+<div class="top"><span class="m"><a href="../index.html">akash29g / portfolio</a></span><button class="tb" id="theme" aria-label="Toggle theme">Theme</button></div>
+<div class="sn" role="navigation" aria-label="Site"><a href="../index.html">Home</a><a href="../aws.html">AWS</a><a href="../projects/docanalytics.html" aria-current="page">Projects</a><a href="../open-source.html">Open source</a><a href="../race.html">Race</a><a href="../ask.html">Ask</a><a href="../blog.html">Blog</a><a href="../resume.html">Resume</a><a href="../contact.html">Contact</a></div>
+<h1>DocAnalytics case study <span>AVEVA, 2026</span></h1>
+<div class="meta"><span class="open">Shipped</span><span>Software Developer Intern, AVEVA Hyderabad, Jun to Aug 2026</span></div>
+<div class="box"><h3>The project</h3><div class="bd"><p>DocAnalytics is a multi-tenant document-processing analytics platform. I designed and built it end to end, from data modeling to deployment, and it runs in production under a custom domain.</p>
+<span class="tag">.NET 10</span><span class="tag">Angular 22 Signals</span><span class="tag">PostgreSQL</span><span class="tag">EF Core</span><span class="tag">AWS Bedrock</span><span class="tag">S3</span><span class="tag">Terraform</span><span class="tag">ECS</span><span class="tag">GuardDuty</span></div></div>
+<div class="box"><h3>Key decisions</h3><div class="bd">
+<h4>Tenant isolation</h4><p>Every tenant's data is separated using EF Core global query filters, backed by role-based authorization, so a missing WHERE clause cannot leak data across tenants.</p>
+<h4>AI invoice extraction you can trust</h4><p>Invoices go through a pipeline on AWS Bedrock and S3. Instead of trusting model output blindly, the pipeline reconciles subtotals against totals automatically, which gave about 98% extraction confidence.</p>
+<h4>Safe uploads</h4><p>Uploaded files are scanned for malware with AWS GuardDuty before they are processed.</p>
+<h4>Infrastructure as code</h4><p>Production AWS infrastructure (ECS, ALB, RDS, ECR) is provisioned with Terraform and shipped through a CI/CD pipeline gated on test coverage, gitleaks and Trivy scans, with API rate limiting in front.</p>
+</div></div>
+<div class="box"><h3>Quality and results</h3><div class="bd"><ul>
+<li>Test-driven development with xUnit on the backend and Vitest on the frontend.</li>
+<li>JMeter load tests confirmed sub 3 second responses with 0% errors at 1M+ record scale.</li>
+<li>Security gates run on every change, not just before release.</li></ul></div></div>
+<div class="box"><h3>Other projects</h3><div class="bd">
+<h4>Twizz, Discord job-alert bot (Sept 2025)</h4><p>Finds job postings by scraping LinkedIn, Reddit threads and other platforms and delivers them to 7000+ users across 4 continents. Python, Tesseract OCR, Docker and AWS EC2, with CloudWatch and Lambda for monitoring and automated recovery.</p>
+<h4>CryptoHunt, Linux emulator CTF (Nov 2024)</h4><p>A Linux emulator for an online Capture-The-Flag at Technozion '24, with a virtual filesystem and commands like ls, cat and grep. Converting levels to JSON cut database queries by 40% and improved response time by 25%. Node.js, MongoDB, Heroku.</p>
+<h4>Investment Portfolio Management System (July 2025)</h4><p>12+ normalized BCNF SQL tables tracking transactions, holdings and returns, with queries for FIFO stock sales, SIP NAV aggregation and return projections.</p>
+</div></div>
+<p class="hint"><a href="../aws.html">See the AWS side of my work</a> or <a href="../contact.html">contact me</a>.</p>
+</div>
+<script src="../config.js"></script>
+<script>
+const $=s=>document.querySelector(s);$("#theme").onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).getPropertyValue("--bg").trim()==="#0d1117";r.dataset.theme=d?"light":"dark"};
+</script>
+</body>
+</html>

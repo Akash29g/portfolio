@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pipeline Grand Prix | Akash Goswami</title>
+<meta name="description" content="Pipeline Grand Prix: an original canvas kart game where the track is Akash's CI pipeline.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap" style="max-width:860px">
+<div class="top"><span class="m"><a href="index.html">akash29g / portfolio</a></span><button class="tb" id="theme" aria-label="Toggle theme">Theme</button></div>
+<div class="sn" role="navigation" aria-label="Site"><a href="index.html">Home</a><a href="aws.html">AWS</a><a href="projects/docanalytics.html">Projects</a><a href="open-source.html">Open source</a><a href="race.html" aria-current="page">Race</a><a href="ask.html">Ask</a><a href="blog.html">Blog</a><a href="resume.html">Resume</a><a href="contact.html">Contact</a></div>
+<h1>Pipeline Grand Prix</h1>
+<p>Four laps, one per pipeline stage: Build, Test, Security, Deploy. Yellow boxes boost you, red merge conflicts slow you down. Tap Space or the canvas at GO for a rocket start. Everything is original canvas art.</p>
+<div id="race" class="on" style="position:static;background:none;padding:0;display:block"><div id="rb" style="width:100%"><div class="rh"><b>Lap times</b><span id="rt" class="m">0.0s</span><button id="rplay" class="tb">Play</button></div><canvas id="gc" width="720" height="440" style="background:#14532d"></canvas><div class="rctl"><button id="rl">Left</button><span id="rm" class="hint">Arrows or A/D steer, Down brakes.</span><button id="rr">Right</button></div></div></div>
+<p class="hint"><a href="index.html">Back to the pull request</a></p>
+</div>
+<script src="config.js"></script>
+<script>
+const $=s=>document.querySelector(s);$("#theme").onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).getPropertyValue("--bg").trim()==="#0d1117";r.dataset.theme=d?"light":"dark"};
+const gc=$("#gc"),gx=gc.getContext("2d"),CX=360,CY=220,GATES=["Build: DocAnalytics shipped to production on a custom domain","Test: TDD with xUnit and Vitest, 0% errors under JMeter load","Security: gitleaks, Trivy and GuardDuty in the pipeline","Deploy: Terraform on AWS, 8 services live"];
+const rk={on:false,keys:{},touch:0},pos=(t,da,db)=>[CX+(255+da)*Math.cos(t),CY+(130+db)*Math.sin(t)];
+const BOX=[3.14,-1.57,0].map(t=>pos(t,0,0)),BAN=[[2.4,25],[-2.4,-30],[-0.8,20],[0.9,-25]].map(a=>pos(a[0],a[1],a[1]/2));
+const onTrack=(x,y)=>{const dx=x-CX,dy=y-CY;return(dx/320)**2+(dy/190)**2<=1&&(dx/190)**2+(dy/70)**2>=1};
+function startRace(){if(rk.on)return;rk.on=true;$("#race").classList.add("on");const n=performance.now();
+Object.assign(rk,{x:CX,y:CY+125,a:Math.PI,v:0,prog:0,lap:0,boost:0,slow:0,spin:0,t0:n,state:"count",cd:n,banner:"",bt:0,got:[0,0,0],hit:[0,0,0,0],last:n,prev:Math.PI/2,rocket:false,fs:false});
+$("#rm").textContent="Arrows or A/D steer, Down brakes. Tap Space at GO for a rocket start.";requestAnimationFrame(loop)}
+function endRace(){rk.on=false}
+function gas(){if(!rk.on||rk.state==="done")return;const d=performance.now()-(rk.cd+3000);
+if(d<-300)rk.fs=true;else if(d<400&&!rk.rocket){rk.rocket=true;rk.boost=70;$("#rm").textContent="Rocket start!"}}
+function finish(t){rk.state="done";const s=(t-rk.t0)/1000;let b=s;try{const o=parseFloat(localStorage.getItem("gp"));if(o&&o<s)b=o;localStorage.setItem("gp",b)}catch(e){}
+$("#rm").textContent="1st place. LGTM. Time "+s.toFixed(1)+"s, best "+b.toFixed(1)+"s.";setTimeout(()=>{endRace();$("#rm").textContent+=" Press Play to race again."},2800)}
+function loop(t){if(!rk.on)return;const dt=Math.min(3,(t-rk.last)/16.67);rk.last=t;
+if(rk.state==="count"&&t-rk.cd>=3000){rk.state="run";rk.t0=t;if(rk.fs){rk.slow=50;$("#rm").textContent="False start. Wait for GO."}}
+if(rk.state==="run"){const l=rk.keys.ArrowLeft||rk.keys.a||rk.touch<0,r=rk.keys.ArrowRight||rk.keys.d||rk.touch>0,br=rk.keys.ArrowDown||rk.keys.s,mx=rk.boost>0?4.6:3.2;
+rk.v+=((br?0:mx)-rk.v)*(br?.08:.04)*dt;
+if(rk.slow>0){rk.v*=Math.pow(.9,dt);rk.slow-=dt;rk.spin+=.35*dt}else rk.spin=0;
+if(rk.boost>0)rk.boost-=dt;
+rk.a+=((r?1:0)-(l?1:0))*.05*dt*Math.min(1,rk.v/2);
+rk.x=Math.max(0,Math.min(720,rk.x+Math.cos(rk.a)*rk.v*dt));rk.y=Math.max(0,Math.min(440,rk.y+Math.sin(rk.a)*rk.v*dt));
+if(!onTrack(rk.x,rk.y))rk.v*=Math.pow(.93,dt);
+BOX.forEach((b,i)=>{if(!rk.got[i]&&Math.hypot(rk.x-b[0],rk.y-b[1])<24){rk.got[i]=1;rk.boost=90}});
+BAN.forEach((b,i)=>{if(!rk.hit[i]&&Math.hypot(rk.x-b[0],rk.y-b[1])<20){rk.hit[i]=1;rk.slow=60}});
+const th=Math.atan2((rk.y-CY)/130,(rk.x-CX)/255);let d=th-rk.prev;if(d>Math.PI)d-=2*Math.PI;if(d<-Math.PI)d+=2*Math.PI;rk.prev=th;rk.prog+=d;
+$("#rt").textContent=((t-rk.t0)/1000).toFixed(1)+"s  Lap "+Math.min(4,rk.lap+1)+"/4";
+if(rk.prog>=2*Math.PI*(rk.lap+1)){rk.banner=GATES[rk.lap];rk.bt=t+2600;rk.lap++;rk.got=[0,0,0];rk.hit=[0,0,0,0];if(rk.lap===4)finish(t)}}
+draw(t);requestAnimationFrame(loop)}
+function draw(t){const g=gx,e=(t-rk.cd)/1000;g.textAlign="center";g.clearRect(0,0,720,440);g.fillStyle="#14532d";g.fillRect(0,0,720,440);
+g.fillStyle="#374151";g.beginPath();g.ellipse(CX,CY,320,190,0,0,7);g.fill();g.fillStyle="#14532d";g.beginPath();g.ellipse(CX,CY,190,70,0,0,7);g.fill();
+g.setLineDash([14,10]);g.lineWidth=3;g.strokeStyle="#e5e7eb";g.beginPath();g.ellipse(CX,CY,320,190,0,0,7);g.stroke();g.beginPath();g.ellipse(CX,CY,190,70,0,0,7);g.stroke();g.setLineDash([]);
+for(let i=0;i<6;i++){g.fillStyle=i%2?"#fff":"#000";g.fillRect(CX-4,CY+70+i*20,8,20)}
+g.fillStyle="#d1fae5";g.font="bold 18px sans-serif";g.fillText("Pipeline Grand Prix",CX,CY-34);g.font="14px sans-serif";
+GATES.forEach((s,i)=>{g.fillStyle=rk.lap>i?"#4ade80":"#9ca3af";g.fillText((rk.lap>i?"passed ":"")+s.split(":")[0],CX,CY-10+i*20)});
+g.font="bold 14px sans-serif";BOX.forEach((b,i)=>{if(rk.got[i])return;g.fillStyle="#facc15";g.fillRect(b[0]-10,b[1]-10,20,20);g.fillStyle="#000";g.fillText("?",b[0],b[1]+5)});
+BAN.forEach((b,i)=>{if(rk.hit[i])return;g.fillStyle="#ef4444";g.beginPath();g.moveTo(b[0],b[1]-11);g.lineTo(b[0]+11,b[1]);g.lineTo(b[0],b[1]+11);g.lineTo(b[0]-11,b[1]);g.fill();g.fillStyle="#fff";g.fillText("!",b[0],b[1]+5)});
+g.save();g.translate(rk.x,rk.y);g.rotate(rk.a+rk.spin);if(rk.boost>0){g.fillStyle="#fb923c";g.fillRect(-26,-5,12,10)}
+g.fillStyle="#a371f7";g.fillRect(-14,-8,28,16);g.fillStyle="#111";[[-12,-11],[-12,7],[6,-11],[6,7]].forEach(w=>g.fillRect(w[0],w[1],8,4));g.fillStyle="#fff";g.fillRect(4,-4,6,8);g.restore();
+if(e<3.8){for(let i=0;i<3;i++){g.fillStyle=e>=3?"#22c55e":(e>i?"#ef4444":"#374151");g.beginPath();g.arc(CX-40+i*40,40,14,0,7);g.fill()}if(e>=3){g.fillStyle="#fff";g.font="bold 28px sans-serif";g.fillText("GO",CX,95)}}
+if(t<rk.bt){g.fillStyle="#000a";g.fillRect(0,400,720,40);g.fillStyle="#fff";g.font="15px sans-serif";g.fillText(rk.banner,CX,425)}
+if(rk.state==="done"){g.fillStyle="#facc15";g.font="bold 64px sans-serif";g.fillText("1st",CX,95)}}
+const kn=e=>e.key.length===1?e.key.toLowerCase():e.key;
+addEventListener("keydown",e=>{if(!rk.on)return;rk.keys[kn(e)]=1;if(["ArrowLeft","ArrowRight","ArrowDown","ArrowUp"," "].includes(e.key))e.preventDefault();if(e.key===" "||e.key==="ArrowUp"||e.key==="w")gas();if(e.key==="Escape")endRace()});
+addEventListener("keyup",e=>{rk.keys[kn(e)]=0});
+const hold=(id,v)=>{const b=$(id);b.onpointerdown=()=>{rk.touch=v;gas()};b.onpointerup=b.onpointerleave=()=>{if(rk.touch===v)rk.touch=0}};hold("#rl",-1);hold("#rr",1);gc.onpointerdown=gas;
+$("#rplay").onclick=startRace;
+</script>
+</body>
+</html>

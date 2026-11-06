@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog | Akash Goswami</title>
+<meta name="description" content="Building a portfolio as a pull request on AWS serverless services.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap" style="max-width:860px">
+<div class="top"><span class="m"><a href="index.html">akash29g / portfolio</a></span><button class="tb" id="theme" aria-label="Toggle theme">Theme</button></div>
+<div class="sn" role="navigation" aria-label="Site"><a href="index.html">Home</a><a href="aws.html">AWS</a><a href="projects/docanalytics.html">Projects</a><a href="open-source.html">Open source</a><a href="race.html">Race</a><a href="ask.html">Ask</a><a href="blog.html" aria-current="page">Blog</a><a href="resume.html">Resume</a><a href="contact.html">Contact</a></div>
+<h1>Blog <span>Design notes</span></h1>
+<article class="box"><h3>I built my portfolio as a pull request, and ran it on AWS</h3><div class="bd">
+<p class="hint">October 31, 2026</p>
+<p>Most portfolios list skills. I wanted mine to behave like my work, so the whole site is a pull request titled "feat: hire Akash Goswami". The visitor is the reviewer, the tabs are Conversation, Files changed, Commits and Checks, and the big green button at the bottom merges me into your team.</p>
+<h4>The frontend</h4><p>The site is plain HTML, CSS and JavaScript with no framework. It is hosted on AWS Amplify Hosting, which serves it through CloudFront and redeploys on every git push.</p>
+<h4>The backend</h4><p>One HTTP API in API Gateway fronts a single Lambda function with three routes. The first powers Ask the reviewer: it calls Amazon Bedrock with a system prompt made of facts about me, so it answers only from what I wrote. The second is the merge button, which starts a Step Functions Express workflow that validates, records the merge in DynamoDB and notifies me through SNS. The third is the contact form, which stores the message in DynamoDB and emails it to me with SES.</p>
+<h4>Why an Express workflow</h4><p>Express workflows can run synchronously, so the API call can wait for the result and return the merge count to the page. A Standard workflow would be better for long jobs, but this is three quick steps.</p>
+<h4>Keeping it cheap and safe</h4><p>Everything is pay per request. The API is throttled, inputs are validated and length limited, CORS is locked to my domain, and the infrastructure lives in a SAM template so it can be redeployed or deleted in one command.</p>
+<h4>The fun parts</h4><p>There is a hidden terminal on the slash key, a Konami code, and Pipeline Grand Prix, a small kart game where each lap is a pipeline stage. See the <a href="aws.html">AWS page</a> for the architecture and my Well-Architected self-review.</p>
+</div></article>
+</div>
+<script src="config.js"></script>
+<script>
+const $=s=>document.querySelector(s);$("#theme").onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).getPropertyValue("--bg").trim()==="#0d1117";r.dataset.theme=d?"light":"dark"};
+</script>
+</body>
+</html>
