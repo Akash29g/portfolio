@@ -1,1 +1,1 @@
-const API_URL=""; // paste your API Gateway URL here after deploying the backend, no trailing slash
+const API_URL="https://lzb373ijj4.execute-api.us-east-1.amazonaws.com";
